@@ -35,7 +35,7 @@ pytest = "*"
 yapf = "*"
 
 [tool.poetry.scripts]
-media_hoard_cli = 'media_hoard_cli.cli:main'
+media_hoard = 'media_hoard_cli.cli:main'
 
 [build-system]
 requires = ["poetry>=0.12"]
