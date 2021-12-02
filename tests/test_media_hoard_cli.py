@@ -2,7 +2,6 @@
 """Tests for `media_hoard_cli` package."""
 # pylint: disable=redefined-outer-name
 
-import pytest
 from click.testing import CliRunner
 
 from media_hoard_cli import cli, hoard
@@ -11,6 +10,7 @@ NIDS = ['YKIKuCiQAl']
 
 
 def test_new_item(mocker):
+    """Test create new Item object."""
     mocker.patch('media_hoard_cli.hoard.nanoid.generate', return_value=NIDS[0])
     item = hoard.new_item(title='Basic Test File',
                           src='tests/fixtures/basic_file.pdf')
@@ -22,6 +22,7 @@ def test_new_item(mocker):
 
 
 def test_cli_add(mocker, tmp_path):
+    """Test adding a single file."""
     mocker.patch('media_hoard_cli.hoard.nanoid.generate', return_value=NIDS[0])
     runner = CliRunner()
     result = runner.invoke(cli.main, [
