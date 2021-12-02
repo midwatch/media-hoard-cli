@@ -1,3 +1,5 @@
+"""Main module."""
+
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 
@@ -21,15 +23,27 @@ class Item:
         self.nid = nanoid.generate(size=10)
 
     def asdict(self):
+        """Return self as dictionary."""
         return asdict(self)
 
 
 def get_config(path):
     """Return config from yaml file at path)."""
 
-    with Path(path).open() as fd_in:
+    with Path(path).open(encoding='utf-8') as fd_in:
         return yaml.safe_load(fd_in)
 
 
 def new_item(title, src):
+    """Create a new Item object.
+
+    :param title: User friendly title for item
+    :type title: str
+    :param src: path to item
+    :type src: str
+
+    :return: Item
+    :rtype: Item
+    """
+
     return Item(title=title, src=src)
