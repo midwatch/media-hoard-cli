@@ -17,6 +17,7 @@ class Item:
     nid: str = field(init=False)
 
     def __post_init__(self):
+        """Initilize dynamic members."""
         slug = self.title.lower().replace(' ', '_')
         ext = Path(self.src).suffix
         self.name = f'{slug}{ext}'
@@ -28,8 +29,7 @@ class Item:
 
 
 def get_config(path):
-    """Return config from yaml file at path)."""
-
+    """Return config from yaml file at path."""
     with Path(path).open(encoding='utf-8') as fd_in:
         return yaml.safe_load(fd_in)
 
@@ -45,5 +45,4 @@ def new_item(title, src):
     :return: Item
     :rtype: Item
     """
-
     return Item(title=title, src=src)
