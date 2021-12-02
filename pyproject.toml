@@ -24,6 +24,7 @@ packages = [
 click = "*"
 python = "^3.8"
 nanoid = "^2.0.0"
+PyYAML = "^6.0"
 
 [tool.poetry.dev-dependencies]
 bump2version = "*"
