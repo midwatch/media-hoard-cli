@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, asdict
 from pathlib import Path
 
 import nanoid
@@ -19,6 +19,9 @@ class Item:
         ext = Path(self.src).suffix
         self.name = f'{slug}{ext}'
         self.nid = nanoid.generate(size=10)
+
+    def asdict(self):
+        return asdict(self)
 
 
 def get_config(path):

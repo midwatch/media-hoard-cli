@@ -14,26 +14,29 @@ NIDS = ['YKIKuCiQAl']
 
 def test_new_item(mocker):
     mocker.patch('media_hoard_cli.hoard.nanoid.generate', return_value=NIDS[0])
-    item = hoard.new_item(title='Interesting Item', src='file.pdf')
+    item = hoard.new_item(title='Basic Test File', src='tests/fixtures/basic_file.pdf')
 
     assert item.nid == NIDS[0]
-    assert item.name == "interesting_item.pdf"
-    assert item.src == 'file.pdf'
-    assert item.title == 'Interesting Item'
+    assert item.name == "basic_test_file.pdf"
+    assert item.src == 'tests/fixtures/basic_file.pdf'
+    assert item.title == 'Basic Test File'
 
 
-def test_cli_add(tmp_path):
+def test_cli_add(mocker, tmp_path):
+    mocker.patch('media_hoard_cli.hoard.nanoid.generate', return_value=NIDS[0])
     runner = CliRunner()
     result = runner.invoke(cli.main, ['add', '--cfg-file', 'tests/fixtures/config.yaml',
-        '--upload-dir', 'tmp_path',
-        'Intesting Item', 'file.pdf'])
+        '--upload-dir', tmp_path,
+        'Basic Test File', 'tests/fixtures/basic_file.pdf'])
 
+    print(result.output)
     assert result.exit_code == 0
+    assert (tmp_path / NIDS[0] / 'basic_test_file.pdf').is_file()
 
-#     expected = """Interesting Item
+    expected = """Basic Test File
 
-#   - http://localhost/YKIKuCiQAl/interesting_item.pdf
+- http://localhost/YKIKuCiQAl/basic_test_file.pdf
 
-# """
+"""
 
-#     assert result.output == expected
+    assert result.output == expected
