@@ -1,6 +1,5 @@
 """Console script for Media Hoard CLI."""
 
-import os
 import shutil
 import subprocess
 import sys
@@ -45,9 +44,8 @@ def add(cfg_file, upload_dir, title, src_file):
             src_dir.mkdir()
             shutil.copy(item.src, src_dir / item.name)
 
-            subprocess.run(['rsync', '-r', src_dir, upload_dir + '/'])
-
-            out_dir = Path(upload_dir) / item.nid
+            subprocess.run(['rsync', '-r', src_dir, upload_dir + '/'],
+                           check=True)
 
             item_url = Template(cfg['item_url']).substitute(item.asdict())
             print(f'{item.title}')
@@ -56,7 +54,7 @@ def add(cfg_file, upload_dir, title, src_file):
             print()
 
         except FileNotFoundError:
-            raise click.ClickException(f'Config file not found at {cfg_file}')
+            raise click.ClickException(f'Config file not found at {cfg_file}')  # pylint: disable=raise-missing-from
 
     return 0
 
