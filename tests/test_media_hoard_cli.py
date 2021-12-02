@@ -3,18 +3,17 @@
 # pylint: disable=redefined-outer-name
 
 import pytest
-
 from click.testing import CliRunner
 
-from media_hoard_cli import cli
-from media_hoard_cli import hoard
+from media_hoard_cli import cli, hoard
 
 NIDS = ['YKIKuCiQAl']
 
 
 def test_new_item(mocker):
     mocker.patch('media_hoard_cli.hoard.nanoid.generate', return_value=NIDS[0])
-    item = hoard.new_item(title='Basic Test File', src='tests/fixtures/basic_file.pdf')
+    item = hoard.new_item(title='Basic Test File',
+                          src='tests/fixtures/basic_file.pdf')
 
     assert item.nid == NIDS[0]
     assert item.name == "basic_test_file.pdf"
@@ -25,9 +24,10 @@ def test_new_item(mocker):
 def test_cli_add(mocker, tmp_path):
     mocker.patch('media_hoard_cli.hoard.nanoid.generate', return_value=NIDS[0])
     runner = CliRunner()
-    result = runner.invoke(cli.main, ['add', '--cfg-file', 'tests/fixtures/config.yaml',
-        '--upload-dir', tmp_path,
-        'Basic Test File', 'tests/fixtures/basic_file.pdf'])
+    result = runner.invoke(cli.main, [
+        'add', '--cfg-file', 'tests/fixtures/config.yaml', '--upload-dir',
+        tmp_path, 'Basic Test File', 'tests/fixtures/basic_file.pdf'
+    ])
 
     print(result.output)
     assert result.exit_code == 0

@@ -1,10 +1,10 @@
 """Console script for Media Hoard CLI."""
 
-import sys
-import tempfile
+import os
 import shutil
 import subprocess
-import os
+import sys
+import tempfile
 from pathlib import Path
 from string import Template
 
@@ -19,8 +19,9 @@ def main():
 
 
 @click.command()
-@click.option('--cfg-file', default="$HOME/.config/media_hoard/config.yaml",
-    help="path to config file")
+@click.option('--cfg-file',
+              default="$HOME/.config/media_hoard/config.yaml",
+              help="path to config file")
 @click.option('--upload-dir', help="overide cfg upload-dir")
 @click.argument('title')
 @click.argument('src_file')
@@ -35,7 +36,8 @@ def add(cfg_file, upload_dir, title, src_file):
     with tempfile.TemporaryDirectory() as tmpdir_name:
         try:
             cfg = hoard.get_config(cfg_file)
-            cfg['upload_dir'] = cfg['upload_dir'] if not upload_dir else upload_dir
+            cfg['upload_dir'] = cfg[
+                'upload_dir'] if not upload_dir else upload_dir
 
             item = hoard.new_item(title, src_file)
 
