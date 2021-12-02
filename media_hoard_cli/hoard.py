@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field
 from pathlib import Path
+
 import nanoid
+import yaml
 
 
 @dataclass
@@ -17,6 +19,13 @@ class Item:
         ext = Path(self.src).suffix
         self.name = f'{slug}{ext}'
         self.nid = nanoid.generate(size=10)
+
+
+def get_config(path):
+    """Return config from yaml file at path)."""
+
+    with Path(path).open() as fd_in:
+        return yaml.safe_load(fd_in)
 
 
 def new_item(title, src):
