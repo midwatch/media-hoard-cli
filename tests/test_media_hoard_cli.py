@@ -19,6 +19,7 @@ def test_item_init():
     assert item.doc_start_pg == 1
     assert item.doc_end_pg == 2
     assert item.name == "simple_pdf_file.pdf"
+    assert item.pages == (1, 2)
     assert len(item.children) == 0
 
     args = {

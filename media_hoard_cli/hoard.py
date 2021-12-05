@@ -19,11 +19,14 @@ class Item:
     sub_title: str = field(default="")
 
     name: str = field(init=False)
+    pages: tuple = field(init=False)
 
     def __post_init__(self):
         """Initilize dynamic members."""
         slug = self.title.lower().replace(' ', '_')
+
         self.name = f'{slug}.pdf'
+        self.pages = tuple(range(self.pdf_start_pg, self.pdf_end_pg + 1))
 
 
 def get_config(path):
