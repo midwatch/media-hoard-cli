@@ -6,26 +6,24 @@ from pathlib import Path
 import nanoid
 import yaml
 
-
 @dataclass
 class Item:
-    """Class for representing a new item."""
 
     title: str
-    src: str
+    pdf_end_pg: int
+    doc_end_pg: int
+
+    children: list = field(default_factory=list)
+    doc_start_pg: int = field(default=1)
+    pdf_start_pg: int = field(default=1)
+    sub_title: str = field(default="")
+
     name: str = field(init=False)
-    nid: str = field(init=False)
 
     def __post_init__(self):
         """Initilize dynamic members."""
         slug = self.title.lower().replace(' ', '_')
-        ext = Path(self.src).suffix
-        self.name = f'{slug}{ext}'
-        self.nid = nanoid.generate(size=10)
-
-    def asdict(self):
-        """Return self as dictionary."""
-        return asdict(self)
+        self.name = f'{slug}.pdf'
 
 
 def get_config(path):
