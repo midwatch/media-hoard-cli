@@ -42,8 +42,8 @@ def test_item_init():
 def test_cli_missing_add_file(tmp_path):
     runner = CliRunner()
 
-    result = runner.invoke(cli.main, ['add', 'Input File Not Found',
-        '/no_such_file.pdf'])
+    result = runner.invoke(cli.main, ['add', '--cfg-file', 'tests/fixtures/config.yaml',
+        'Input File Not Found', '/no_such_file.pdf'])
 
     assert result.exit_code == 1
     assert "/no_such_file.pdf" in result.output
@@ -58,13 +58,11 @@ def test_cli_add_pdf(mocker, tmp_path):
         tmp_path, 'Basic Test File', 'tests/fixtures/file.pdf'
     ])
 
-    print(tmp_path)
-    print(result.output)
-    print(list(tmp_path.iterdir()))
     assert result.exit_code == 0
     assert (tmp_path / ITEM_NID / 'basic_test_file.pdf').is_file()
 
     expected = """Basic Test File
+
 
 - http://localhost/YKIKuCiQAl/basic_test_file.pdf
 

@@ -31,11 +31,14 @@ def add(cfg_file, upload_dir, title, src_file):
     SRC_FILE: path to item to add (path/to/file.pdf)
     """
     with tempfile.TemporaryDirectory() as dir_temp:
+
         item_id = hoard.get_id()
         dir_stage = dir_temp + '/' + item_id
         Path(dir_stage).mkdir()
 
         try:
+            cfg = hoard.parse_config_file(cfg_file, upload_dir)
+
             item = hoard.new_item(src_file, dir_stage, title)
 
         except FileNotFoundError as exp:
