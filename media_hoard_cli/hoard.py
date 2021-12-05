@@ -50,7 +50,7 @@ class Item:
         self.pdf_start_pg = int(self.pdf_start_pg)
 
         self.name = f'{slug}.pdf'
-        self.pages = tuple(range(self.pdf_start_pg, self.pdf_end_pg + 1))
+        self.pages = tuple(range(self.pdf_start_pg - 1, self.pdf_end_pg))
 
     def as_dict(self):
         return asdict(self)
