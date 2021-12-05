@@ -4,6 +4,7 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 import shutil
 from string import Template
+import csv
 
 import nanoid
 import yaml
@@ -15,12 +16,21 @@ $sub_title
 - $item_url
 """
 
+ITEM_PART_TEMPLATE = """
+$title
+$sub_title
+
+pages: $doc_start_pg-$doc_end_pg
+
+- $item_url
+"""
+
 @dataclass
 class Item:
 
     title: str
-    pdf_end_pg: int
     doc_end_pg: int
+    pdf_end_pg: int
 
     children: list = field(default_factory=list)
     doc_start_pg: int = field(default=1)
@@ -33,6 +43,11 @@ class Item:
     def __post_init__(self):
         """Initilize dynamic members."""
         slug = self.title.lower().replace(' ', '_')
+
+        self.doc_end_pg = int(self.doc_end_pg)
+        self.doc_start_pg = int(self.doc_start_pg)
+        self.pdf_end_pg = int(self.pdf_end_pg)
+        self.pdf_start_pg = int(self.pdf_start_pg)
 
         self.name = f'{slug}.pdf'
         self.pages = tuple(range(self.pdf_start_pg, self.pdf_end_pg + 1))
@@ -55,11 +70,26 @@ def _add_pdf(src, dir_stage, title):
     return item
 
 
+def _add_pdf_part(src, dir_stage, part):
+
+    with Path(src).open('rb') as fd_in:
+        reader = PdfFileReader(fd_in)
+        writer = PdfFileWriter()
+
+        for page in part.pages:
+            writer.addPage(reader.getPage(page))
+
+        with (Path(dir_stage) / part.name).open('wb') as fd_out:
+            writer.write(fd_out)
+
+    return part
+
+
 def get_id():
     return nanoid.generate(size=10)
 
 
-def new_item(src, dir_stage, title):
+def new_item(src, dir_stage, parts, title):
     """Create a new Item object.
 
     :param src: path to file to add
@@ -72,7 +102,14 @@ def new_item(src, dir_stage, title):
     :return: Item
     :rtype: Item
     """
-    return _add_pdf(src, dir_stage, title)
+    # hoard.new_item(src_file, dir_stage, parts, title)
+
+    item = _add_pdf(src, dir_stage, title)
+
+    for part in parts:
+        item.children.append(_add_pdf_part(src, dir_stage, part))
+
+    return item
 
 
 def parse_config_file(path, upload_dir):
@@ -87,11 +124,35 @@ def parse_config_file(path, upload_dir):
         return cfg
 
 
+def parse_parts_file(path):
+    parts = []
+
+    try:
+        with Path(path).open(encoding='utf-8', newline='') as fd_in:
+            reader = csv.DictReader(fd_in)
+
+            for row in reader:
+                parts.append(Item(**row))
+
+    except TypeError:
+        pass
+
+    return parts
+
+
 def render_item(item, item_id, item_url_str):
 
     fields = item.as_dict()
     fields['item_url'] = Template(item_url_str).substitute(nid=item_id, name=item.name)
 
     out = Template(ITEM_TEMPLATE).substitute(**fields)
+
+    part_template = Template(ITEM_PART_TEMPLATE)
+    item_url_template = Template(item_url_str)
+
+    for child in item.children:
+        fields = child.as_dict()
+        fields['item_url'] = item_url_template.substitute(nid=item_id, name=child.name)
+        out += part_template.substitute(**fields)
 
     return out

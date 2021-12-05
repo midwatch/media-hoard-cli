@@ -69,3 +69,48 @@ def test_cli_add_pdf(mocker, tmp_path):
 """
 
     assert result.output == expected
+
+
+def test_cli_add_pdf_parts(mocker, tmp_path):
+    """Test adding a pdf file and parts."""
+    mocker.patch('media_hoard_cli.hoard.nanoid.generate', return_value=ITEM_NID)
+    runner = CliRunner()
+    result = runner.invoke(cli.main, [
+        'add', '--cfg-file', 'tests/fixtures/config.yaml', '--part-file',
+        'tests/fixtures/file_parts.csv', '--upload-dir',
+        tmp_path, 'Basic Test File', 'tests/fixtures/file_with_parts.pdf'
+    ])
+
+    print(result.output)
+    assert result.exit_code == 0
+    assert (tmp_path / ITEM_NID / 'introduction.pdf').is_file()
+
+    expected = """Basic Test File
+
+
+- http://localhost/YKIKuCiQAl/basic_test_file.pdf
+
+Introduction
+
+
+pages: 1-2
+
+- http://localhost/YKIKuCiQAl/introduction.pdf
+
+Chapter 1
+
+
+pages: 3-6
+
+- http://localhost/YKIKuCiQAl/chapter_1.pdf
+
+Chapter 3
+Nonsense, more nonsense, and silliness
+
+pages: 9-11
+
+- http://localhost/YKIKuCiQAl/chapter_3.pdf
+
+"""
+
+    assert result.output == expected
