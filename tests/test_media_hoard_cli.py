@@ -9,7 +9,7 @@ ITEM_NID = 'YKIKuCiQAl'
 
 
 def test_item_init():
-
+    """Test Item init."""
     item = hoard.Item(title="Simple PDF File", doc_end_pg=2, pdf_end_pg=2)
 
     assert item.title == "Simple PDF File"
@@ -40,7 +40,8 @@ def test_item_init():
     assert item.pdf_end_pg == 16
 
 
-def test_cli_missing_add_file(tmp_path):
+def test_cli_missing_add_file():
+    """Test exception text on missing input file."""
     runner = CliRunner()
 
     result = runner.invoke(cli.main, [
