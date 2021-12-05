@@ -1,11 +1,9 @@
 """Console script for Media Hoard CLI."""
 
-import shutil
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
-from string import Template
 
 import click
 

@@ -27,8 +27,8 @@ pages: $doc_start_pg-$doc_end_pg
 
 
 @dataclass
-class Item:
-
+class Item:  # pylint: disable=too-many-instance-attributes
+    """Class representing an Item and optional children."""
     title: str
     doc_end_pg: int
     pdf_end_pg: int
@@ -54,6 +54,7 @@ class Item:
         self.pages = tuple(range(self.pdf_start_pg - 1, self.pdf_end_pg))
 
     def as_dict(self):
+        """Return instance fields as a dictionary."""
         return asdict(self)
 
 
@@ -87,6 +88,7 @@ def _add_pdf_part(src, dir_stage, part):
 
 
 def get_id():
+    """Return a nanoid string."""
     return nanoid.generate(size=10)
 
 
@@ -126,6 +128,7 @@ def parse_config_file(path, upload_dir):
 
 
 def parse_parts_file(path):
+    """Parse parts file and return a list of Items."""
     parts = []
 
     try:
@@ -142,7 +145,7 @@ def parse_parts_file(path):
 
 
 def render_item(item, item_id, item_url_str):
-
+    """Render an item and optional children to a text string."""
     fields = item.as_dict()
     fields['item_url'] = Template(item_url_str).substitute(nid=item_id,
                                                            name=item.name)
