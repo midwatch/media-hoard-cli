@@ -1,14 +1,14 @@
 """Main module."""
 
+import csv
+import shutil
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
-import shutil
 from string import Template
-import csv
 
 import nanoid
 import yaml
-from PyPDF4 import PdfFileWriter, PdfFileReader
+from PyPDF4 import PdfFileReader, PdfFileWriter
 
 ITEM_TEMPLATE = """$title
 $sub_title
@@ -24,6 +24,7 @@ pages: $doc_start_pg-$doc_end_pg
 
 - $item_url
 """
+
 
 @dataclass
 class Item:
@@ -143,7 +144,8 @@ def parse_parts_file(path):
 def render_item(item, item_id, item_url_str):
 
     fields = item.as_dict()
-    fields['item_url'] = Template(item_url_str).substitute(nid=item_id, name=item.name)
+    fields['item_url'] = Template(item_url_str).substitute(nid=item_id,
+                                                           name=item.name)
 
     out = Template(ITEM_TEMPLATE).substitute(**fields)
 
@@ -152,7 +154,8 @@ def render_item(item, item_id, item_url_str):
 
     for child in item.children:
         fields = child.as_dict()
-        fields['item_url'] = item_url_template.substitute(nid=item_id, name=child.name)
+        fields['item_url'] = item_url_template.substitute(nid=item_id,
+                                                          name=child.name)
         out += part_template.substitute(**fields)
 
     return out
