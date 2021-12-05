@@ -30,31 +30,21 @@ def add(cfg_file, upload_dir, title, src_file):
     TITLE: User friendly title
     SRC_FILE: path to item to add (path/to/file.pdf)
     """
-    # media_hoard add --chunk chunks.csv TITLE path/to/file.pdf
+    with tempfile.TemporaryDirectory() as dir_temp:
+        item_id = hoard.get_id()
+        dir_stage = dir_temp + '/' + item_id
+        Path(dir_stage).mkdir()
 
-    with tempfile.TemporaryDirectory() as tmpdir_name:
         try:
-            cfg = hoard.get_config(cfg_file)
-            cfg['upload_dir'] = cfg[
-                'upload_dir'] if not upload_dir else upload_dir
+            item = hoard.new_item(src_file, dir_stage, title)
 
-            item = hoard.new_item(title, src_file)
+        except FileNotFoundError as exp:
+            raise click.ClickException(exp)
 
-            src_dir = Path(tmpdir_name) / item.nid
-            src_dir.mkdir()
-            shutil.copy(item.src, src_dir / item.name)
-
-            subprocess.run(['rsync', '-r', src_dir, upload_dir + '/'],
+        subprocess.run(['rsync', '-r', dir_stage, upload_dir + '/'],
                            check=True)
 
-            item_url = Template(cfg['item_url']).substitute(item.asdict())
-            print(f'{item.title}')
-            print()
-            print(f'- {item_url}')
-            print()
-
-        except FileNotFoundError:
-            raise click.ClickException(f'Config file not found at {cfg_file}')  # pylint: disable=raise-missing-from
+        print(hoard.render_item(item, item_id, cfg['item_url']))
 
     return 0
 
