@@ -29,6 +29,7 @@ pages: $doc_start_pg-$doc_end_pg
 @dataclass
 class Item:  # pylint: disable=too-many-instance-attributes
     """Class representing an Item and optional children."""
+
     title: str
     doc_end_pg: int
     pdf_end_pg: int
@@ -105,8 +106,6 @@ def new_item(src, dir_stage, parts, title):
     :return: Item
     :rtype: Item
     """
-    # hoard.new_item(src_file, dir_stage, parts, title)
-
     item = _add_pdf(src, dir_stage, title)
 
     for part in parts:
