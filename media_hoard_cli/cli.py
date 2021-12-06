@@ -17,7 +17,7 @@ def main():
 
 @click.command()
 @click.option('--cfg-file',
-              default="$HOME/.config/media_hoard/config.yaml",
+              default="~/.config/media_hoard/config.yaml",
               help="path to config file")
 @click.option('--part-file', default=None, help="path to parts file")
 @click.option('--upload-dir', help="overide cfg upload-dir")
