@@ -116,7 +116,7 @@ def new_item(src, dir_stage, parts, title):
 
 def parse_config_file(path, upload_dir):
     """Return config from yaml file at path."""
-    with Path(path).open(encoding='utf-8') as fd_in:
+    with Path(path).expanduser().open(encoding='utf-8') as fd_in:
         cfg = yaml.safe_load(fd_in)
         cfg['upload_dir'] = cfg['upload_dir'] if not upload_dir else upload_dir
 
