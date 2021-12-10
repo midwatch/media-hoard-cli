@@ -1,7 +1,7 @@
 [tool]
 [tool.poetry]
 name = "media_hoard_cli"
-version = "0.2.1"
+version = "0.2.2"
 homepage = "https://github.com/midwatch/media_hoard_cli"
 description = "Top-level package for Media Hoard CLI."
 authors = ["Justin Stout <midwatch@jstout.us>"]
