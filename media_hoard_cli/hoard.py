@@ -25,6 +25,9 @@ pages: $doc_start_pg-$doc_end_pg
 - $item_url
 """
 
+NANOID_ALPHABET = '-0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+NANOID_SIZE = 10
+
 
 @dataclass
 class Item:  # pylint: disable=too-many-instance-attributes
@@ -90,7 +93,7 @@ def _add_pdf_part(src, dir_stage, part):
 
 def get_id():
     """Return a nanoid string."""
-    return nanoid.generate(size=10)
+    return nanoid.generate(NANOID_ALPHABET, NANOID_SIZE)
 
 
 def new_item(src, dir_stage, parts, title):
